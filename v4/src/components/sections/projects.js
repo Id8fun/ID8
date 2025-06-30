@@ -268,12 +268,9 @@ const Projects = () => {
     <StyledProjectsSection>
       <h2 ref={revealTitle}>{t('otherProjects')}</h2>
 
-      {/* <Link className="inline-link archive-link" to="/archive" ref={revealArchiveLink}>
+      <Link className="inline-link archive-link" to="/archive" ref={revealArchiveLink}>
         {t('viewArchive')}
-      </Link> */}
-      <span className="inline-link archive-link" ref={revealArchiveLink}>
-        {t('updating')}
-      </span>
+      </Link>
 
       {/* <ul className="projects-grid">
         {prefersReducedMotion ? (

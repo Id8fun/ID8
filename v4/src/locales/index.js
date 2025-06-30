@@ -12,7 +12,7 @@ export const translations = {
     name: 'Y Lau.',
     tagline: 'I create interesting things for the online world.',
     description: "I am an Internet Product Manager, focused on creating engaging digital experiences (occasionally developing applications). Currently, I am dedicated to building exceptional products in the Web3 space.",
-    company: 'Upstatement',
+    //company: 'Upstatement',
     cta: 'Check out my Application!',
     
     // About Section
@@ -29,7 +29,7 @@ export const translations = {
     projectsTitle: 'Some Things I\'ve Built',
     featuredTitle: 'Featured Project',
   featuredSectionTitle: 'Some Things I\'ve Built',
-    otherProjects: 'Other Noteworthy Projects',
+    otherProjects: 'My Blog',
     viewArchive: 'view the archive',
     updating: 'Updating...',
     showMore: 'Show More',
@@ -77,7 +77,7 @@ export const translations = {
     name: '刘宇.',
     tagline: '我为网络世界创造有趣事物',
     description: '我是一名互联网产品经理，专注于创造有趣的互联事务（偶尔开发应用），目前专注于web3领域打造卓越的产品',
-    company: 'Upstatement',
+    //company: 'Upstatement',
     cta: '查看我的应用！',
     
     // About Section
@@ -94,7 +94,7 @@ export const translations = {
     projectsTitle: '我构建的一些作品',
     featuredTitle: '精选项目',
     featuredSectionTitle: '我构建的一些项目',
-    otherProjects: '其他值得注意的项目',
+    otherProjects: '我的博客',
     viewArchive: '查看档案库',
     updating: '更新中...',
     showMore: '显示更多',
@@ -142,7 +142,7 @@ export const translations = {
     name: '劉宇.',
     tagline: '我為網路世界創造有趣事物',
     description: '我是一名互聯網產品經理，專注於創造有趣的互聯事務（偶爾開發應用），目前專注於web3領域打造卓越的產品',
-    company: 'Upstatement',
+    //company: 'Upstatement',
     cta: '查看我的應用！',
     
     // About Section
@@ -159,7 +159,7 @@ export const translations = {
     projectsTitle: '我建構的一些作品',
     featuredTitle: '精選專案',
     featuredSectionTitle: '我構建的一些專案',
-    otherProjects: '其他值得注意的專案',
+    otherProjects: '我的博客',
     viewArchive: '查看檔案庫',
     updating: '更新中...',
     showMore: '顯示更多',

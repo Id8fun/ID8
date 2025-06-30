@@ -1,87 +1,158 @@
-<div align="center">
-  <img alt="Logo" src="https://raw.githubusercontent.com/bchiang7/v4/main/src/images/logo.png" width="100" />
-</div>
-<h1 align="center">
-  brittanychiang.com - v4
-</h1>
-<p align="center">
-  The fourth iteration of <a href="https://brittanychiang.com" target="_blank">brittanychiang.com</a> built with <a href="https://www.gatsbyjs.org/" target="_blank">Gatsby</a> and hosted with <a href="https://www.netlify.com/" target="_blank">Netlify</a>
-</p>
-<p align="center">
-  Previous iterations:
-  <a href="https://github.com/bchiang7/v1" target="_blank">v1</a>,
-  <a href="https://github.com/bchiang7/v2" target="_blank">v2</a>,
-  <a href="https://github.com/bchiang7/bchiang7.github.io" target="_blank">v3</a>
-</p>
-<p align="center">
-  <a href="https://app.netlify.com/sites/brittanychiang/deploys" target="_blank">
-    <img src="https://api.netlify.com/api/v1/badges/1963b488-7b78-48c9-9e2d-6fb5e47ab3af/deploy-status" alt="Netlify Status" />
-  </a>
-</p>
+# 个人作品集网站
 
-![demo](https://raw.githubusercontent.com/bchiang7/v4/main/src/images/demo.png)
+基于 Gatsby 构建的现代化个人作品集网站，支持多语言（中文/英文），具有响应式设计和优雅的动画效果。
 
-## 🚨 Forking this repo (please read!)
+## 🏗️ 项目架构
 
-Many people have contacted me asking me if they can use this code for their own website, and the answer to that question is usually **yes, with attribution**.
+### 技术栈
+- **前端框架**: React 17 + Gatsby 3
+- **样式方案**: Styled Components
+- **动画库**: Anime.js + ScrollReveal
+- **国际化**: React i18next
+- **构建工具**: Gatsby + Webpack
+- **代码规范**: ESLint + Prettier + Husky
 
-I value keeping my site open source, but as you all know, _**plagiarism is bad**_. It's always disheartening whenever I find that someone has copied my site without giving me credit. I spent a non-trivial amount of effort building and designing this iteration of my website, and I am proud of it! All I ask of you all is to not claim this effort as your own.
+### 目录结构
+```
+src/
+├── components/          # React 组件
+│   ├── sections/       # 页面区块组件
+│   ├── icons/          # SVG 图标组件
+│   └── layout/         # 布局组件
+├── pages/              # 页面文件
+├── styles/             # 全局样式和主题
+├── locales/            # 多语言配置
+├── hooks/              # 自定义 React Hooks
+├── utils/              # 工具函数
+└── images/             # 静态图片资源
 
-Please also note that I did not build this site with the intention of it being a starter theme, so if you have questions about implementation, please refer to the [Gatsby docs](https://www.gatsbyjs.org/docs/).
+content/
+├── featured/           # 精选项目内容
+├── projects/           # 项目展示内容
+├── jobs/               # 工作经历内容
+└── posts/              # 博客文章内容
+```
 
-### TL;DR
+### 核心功能
+- 📱 响应式设计，支持移动端和桌面端
+- 🌐 多语言支持（中文/英文切换）
+- ✨ 流畅的页面动画和交互效果
+- 📝 Markdown 驱动的内容管理
+- 🎨 可定制的主题色彩系统
+- ⚡ 静态站点生成，性能优化
+- 🔍 SEO 友好，支持 sitemap 和 robots.txt
 
-Yes, you can fork this repo. Please give me proper credit by linking back to [brittanychiang.com](https://brittanychiang.com). Thanks!
+## 🚀 部署步骤
 
-## 🛠 Installation & Set Up
+### 环境要求
+- Node.js 14.x 或更高版本
+- npm 或 yarn 包管理器
+- Git
 
-1. Install the Gatsby CLI
+### 本地开发
 
-   ```sh
-   npm install -g gatsby-cli
+1. **克隆项目**
+   ```bash
+   git clone https://github.com/Id8fun/ID8.git
+   cd ID8/v4
    ```
 
-2. Install and use the correct version of Node using [NVM](https://github.com/nvm-sh/nvm)
-
-   ```sh
-   nvm install
+2. **安装依赖**
+   ```bash
+   # 使用 yarn（推荐）
+   yarn install
+   
+   # 或使用 npm
+   npm install
    ```
 
-3. Install dependencies
-
-   ```sh
-   yarn
+3. **启动开发服务器**
+   ```bash
+   # 使用 yarn
+   yarn develop
+   
+   # 或使用 npm
+   npm run develop
    ```
+   
+   访问 `http://localhost:8000` 查看网站
 
-4. Start the development server
+### 生产构建
 
-   ```sh
-   npm start
-   ```
-
-## 🚀 Building and Running for Production
-
-1. Generate a full static production build
-
-   ```sh
+1. **构建静态文件**
+   ```bash
+   # 使用 yarn
+   yarn build
+   
+   # 或使用 npm
    npm run build
    ```
 
-1. Preview the site as it will appear once deployed
-
-   ```sh
+2. **本地预览生产版本**
+   ```bash
+   # 使用 yarn
+   yarn serve
+   
+   # 或使用 npm
    npm run serve
    ```
 
-## 🎨 Color Reference
+### 部署选项
 
-| Color          | Hex                                                                |
-| -------------- | ------------------------------------------------------------------ |
-| Navy           | ![#0a192f](https://via.placeholder.com/10/0a192f?text=+) `#0a192f` |
-| Light Navy     | ![#112240](https://via.placeholder.com/10/0a192f?text=+) `#112240` |
-| Lightest Navy  | ![#233554](https://via.placeholder.com/10/303C55?text=+) `#233554` |
-| Slate          | ![#8892b0](https://via.placeholder.com/10/8892b0?text=+) `#8892b0` |
-| Light Slate    | ![#a8b2d1](https://via.placeholder.com/10/a8b2d1?text=+) `#a8b2d1` |
-| Lightest Slate | ![#ccd6f6](https://via.placeholder.com/10/ccd6f6?text=+) `#ccd6f6` |
-| White          | ![#e6f1ff](https://via.placeholder.com/10/e6f1ff?text=+) `#e6f1ff` |
-| Green          | ![#64ffda](https://via.placeholder.com/10/64ffda?text=+) `#64ffda` |
+#### 1. Netlify 部署（推荐）
+- 连接 GitHub 仓库到 Netlify
+- 构建命令：`npm run build`
+- 发布目录：`public`
+- 自动部署：推送到主分支时自动构建
+
+#### 2. Vercel 部署
+- 导入 GitHub 仓库到 Vercel
+- 框架预设：Gatsby
+- 自动检测构建设置
+
+#### 3. GitHub Pages 部署
+```bash
+# 安装 gh-pages
+npm install --save-dev gh-pages
+
+# 添加部署脚本到 package.json
+"scripts": {
+  "deploy": "gatsby build && gh-pages -d public"
+}
+
+# 部署
+npm run deploy
+```
+
+#### 4. 服务器部署
+1. 构建项目：`npm run build`
+2. 将 `public` 目录上传到服务器
+3. 配置 Web 服务器（Nginx/Apache）指向 `public` 目录
+
+### 环境变量配置
+
+创建 `.env.development` 和 `.env.production` 文件：
+
+```env
+# 站点配置
+GATSBY_SITE_URL=https://your-domain.com
+GATSBY_GOOGLE_ANALYTICS_ID=your-ga-id
+
+# API 配置（如需要）
+GATSBY_API_URL=your-api-url
+```
+
+### 自定义配置
+
+- **站点信息**：编辑 `gatsby-config.js` 中的 `siteMetadata`
+- **主题色彩**：修改 `src/styles/theme.js`
+- **多语言内容**：编辑 `src/locales/index.js`
+- **内容管理**：在 `content/` 目录下添加 Markdown 文件
+
+### 性能优化
+
+- 图片自动优化（gatsby-plugin-image）
+- 代码分割和懒加载
+- PWA 支持（离线缓存）
+- SEO 优化（sitemap、robots.txt）
+- 压缩和缓存策略
