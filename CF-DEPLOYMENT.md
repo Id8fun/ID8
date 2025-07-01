@@ -15,19 +15,26 @@
 - **Build command**: `npm run build`
 - **Build output directory**: `public`
 - **Root directory**: `/` (项目根目录)
-- **Install command**: `npm install --legacy-peer-deps` (必须设置，解决依赖冲突)
+- **Install command**: `npm install --legacy-peer-deps` ⚠️ **必须手动设置**
 
-### ⚠️ 重要提醒
+### 🚨 关键配置步骤（必须执行）
 
-**Cloudflare Pages 部署配置中必须手动设置安装命令**：
+**部署失败的主要原因：Cloudflare Pages 使用默认的 `npm install` 而不是 `npm install --legacy-peer-deps`**
 
-1. 进入 Cloudflare Pages 项目设置
-2. 找到 "Build & deployments" 部分
-3. 点击 "Edit configuration"
-4. 在 "Install command" 字段中输入：`npm install --legacy-peer-deps`
-5. 保存配置并重新部署
+**必须在 Cloudflare Pages 控制台中手动配置安装命令**：
 
-如果不设置此命令，Cloudflare Pages 会使用默认的 `npm install`，导致依赖冲突错误。
+1. **登录 Cloudflare Pages 控制台**
+2. **选择您的项目** → Settings
+3. **进入构建配置** → Build & deployments → **Edit configuration**
+4. **设置安装命令**：在 "Install command" 字段中输入：
+   ```
+   npm install --legacy-peer-deps
+   ```
+5. **保存并重新部署**
+
+**验证配置正确**：部署日志应显示 `Installing project dependencies: npm install --legacy-peer-deps` 而不是 `npm install --progress=false`
+
+⚠️ **如果跳过此步骤，部署将因 ERESOLVE 依赖冲突错误而失败**
 
 ## 详细配置说明
 
