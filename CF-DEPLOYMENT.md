@@ -15,7 +15,19 @@
 - **Build command**: `npm run build`
 - **Build output directory**: `public`
 - **Root directory**: `/` (项目根目录)
-- **Install command**: `npm install --legacy-peer-deps` (推荐，解决依赖冲突)
+- **Install command**: `npm install --legacy-peer-deps` (必须设置，解决依赖冲突)
+
+### ⚠️ 重要提醒
+
+**Cloudflare Pages 部署配置中必须手动设置安装命令**：
+
+1. 进入 Cloudflare Pages 项目设置
+2. 找到 "Build & deployments" 部分
+3. 点击 "Edit configuration"
+4. 在 "Install command" 字段中输入：`npm install --legacy-peer-deps`
+5. 保存配置并重新部署
+
+如果不设置此命令，Cloudflare Pages 会使用默认的 `npm install`，导致依赖冲突错误。
 
 ## 详细配置说明
 
@@ -110,17 +122,24 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 2. 优化 Gatsby 配置，启用增量构建
 3. 减少并发构建进程：`GATSBY_CPU_COUNT`: `1`
 
-### 问题 3：依赖版本冲突和 lockfile 修改错误
+### 问题 3：依赖版本冲突错误
 
-**错误信息**: `The lockfile would have been modified by this install, which is explicitly forbidden`
-**原因**: Yarn 4.x 在 CI 环境中检测到依赖版本冲突，且不允许修改 lockfile
+**错误信息**: `ERESOLVE unable to resolve dependency tree` 或 `peer gatsby@"^5.2.0" from gatsby-plugin-react-i18next@3.0.1`
+**原因**: `gatsby-plugin-react-i18next@3.0.1` 要求 Gatsby 5.x，但项目使用的是 Gatsby 3.x
 **解决方案**：
 
-1. **在 Cloudflare Pages 环境变量中添加**：
-   - `YARN_ENABLE_IMMUTABLE_INSTALLS`: `false`
-   - `CI`: `false`
-2. **或者修改安装命令为**：`npm install --legacy-peer-deps`
+1. **在 Cloudflare Pages 中设置安装命令**（推荐）：
+
+   - 进入项目设置 → Build & deployments → Edit configuration
+   - Install command: `npm install --legacy-peer-deps`
+   - 保存并重新部署
+
+2. **或者在环境变量中添加**：
+
+   - `NPM_CONFIG_LEGACY_PEER_DEPS`: `true`
+
 3. **或者修改构建命令为**：`npm install --legacy-peer-deps && npm run build`
+
 4. **本地修复依赖冲突**：
    ```bash
    # 删除 lockfile 和 node_modules
