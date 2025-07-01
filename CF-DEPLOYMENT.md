@@ -1,14 +1,19 @@
 # Cloudflare Pages 部署配置说明
 
+本文档详细说明了如何在 Cloudflare Pages 上部署 Gatsby 项目的完整配置和最佳实践。
+
 ## 基本配置
 
 ### 框架预设
 - **Framework preset**: `Gatsby`
+- **版本要求**: Gatsby 3.x 或更高版本
+- **Node.js 版本**: 推荐 18.x LTS
 
 ### 构建设置
 - **Build command**: `npm run build`
 - **Build output directory**: `public`
 - **Root directory**: `/` (项目根目录)
+- **Install command**: `npm ci` (自动检测)
 
 ## 详细配置说明
 
@@ -25,9 +30,21 @@ public
 Gatsby 构建后的静态文件会输出到 `public` 目录。
 
 ### 3. 环境变量 (Environment Variables)
-如果项目需要环境变量，可以在 Cloudflare Pages 的设置中添加：
-- `NODE_VERSION`: `18` (推荐使用 Node.js 18)
+在 Cloudflare Pages 的设置中可以添加以下环境变量：
+
+#### 必需的环境变量
+- `NODE_VERSION`: `18` (推荐使用 Node.js 18 LTS)
 - `NPM_VERSION`: `latest`
+
+#### 可选的环境变量
+- `GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES`: `true` (启用增量构建)
+- `GATSBY_CPU_COUNT`: `2` (限制 CPU 使用)
+- `NODE_OPTIONS`: `--max-old-space-size=4096` (增加内存限制)
+- `GATSBY_TELEMETRY_DISABLED`: `1` (禁用遥测)
+
+#### 生产环境变量
+- `NODE_ENV`: `production` (自动设置)
+- `GATSBY_ACTIVE_ENV`: `production`
 
 ### 4. 根目录设置
 - 如果代码在仓库根目录：设置为 `/`
@@ -52,17 +69,38 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 
 ## 常见问题解决
 
-### 问题：Cannot find cwd: /opt/buildhome/repo/v4
+### 问题 1：Cannot find cwd: /opt/buildhome/repo/v4
+**原因**: Root directory 配置错误
 **解决方案**：
-- 检查 Root directory 设置是否正确
-- 如果项目在根目录，设置为 `/`
-- 如果项目在 `v4` 子目录，设置为 `/v4`
+1. 登录 Cloudflare Pages 控制台
+2. 进入项目设置 → Build & deployments
+3. 点击 "Edit configuration"
+4. 将 Root directory 从 `/v4` 改为 `/`
+5. 保存并重新部署
 
-### 问题：构建失败
+### 问题 2：构建超时或内存不足
+**解决方案**：
+1. 添加环境变量 `NODE_OPTIONS`: `--max-old-space-size=4096`
+2. 优化 Gatsby 配置，启用增量构建
+3. 减少并发构建进程：`GATSBY_CPU_COUNT`: `1`
+
+### 问题 3：依赖安装失败
 **检查项目**：
-1. 确保 `package.json` 中有 `build` 脚本
-2. 确保所有依赖都在 `package.json` 中正确声明
-3. 检查 Node.js 版本兼容性
+1. 确保 `package.json` 和 `yarn.lock`/`package-lock.json` 同步
+2. 检查依赖版本兼容性
+3. 清理 node_modules 后重新安装
+
+### 问题 4：GraphQL 查询错误
+**解决方案**：
+1. 检查 `gatsby-config.js` 中的插件配置
+2. 确保所有 markdown 文件格式正确
+3. 验证 frontmatter 字段一致性
+
+### 问题 5：静态资源加载失败
+**解决方案**：
+1. 检查 `static` 目录结构
+2. 确保图片路径正确
+3. 验证 `gatsby-config.js` 中的 `pathPrefix` 设置
 
 ## 项目结构
 
@@ -77,16 +115,100 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 └── public/               # 构建输出目录（自动生成）
 ```
 
+## 性能优化建议
+
+### 1. 构建优化
+- 启用增量构建：`GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true`
+- 使用 Gatsby Cloud 缓存策略
+- 优化图片处理：使用 `gatsby-plugin-image`
+
+### 2. 部署优化
+- 启用 Cloudflare 的自动缩小功能
+- 配置适当的缓存策略
+- 使用 Cloudflare 的图片优化服务
+
+### 3. 监控和分析
+- 启用 Cloudflare Analytics
+- 配置 Core Web Vitals 监控
+- 设置部署通知
+
+## 高级配置
+
+### 自定义构建脚本
+```json
+{
+  "scripts": {
+    "build": "gatsby build",
+    "build:production": "gatsby build --prefix-paths",
+    "clean": "gatsby clean"
+  }
+}
+```
+
+### Headers 配置
+创建 `_headers` 文件在 `static` 目录下：
+```
+/*
+  X-Frame-Options: DENY
+  X-XSS-Protection: 1; mode=block
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/static/*
+  Cache-Control: public, max-age=31536000, immutable
+```
+
+### 重定向配置
+创建 `_redirects` 文件在 `static` 目录下：
+```
+# 重定向旧路径
+/old-path/* /new-path/:splat 301
+
+# SPA 回退
+/* /index.html 200
+```
+
 ## 注意事项
 
-1. **构建时间**：首次部署可能需要几分钟时间
+1. **构建时间**：首次部署可能需要 5-10 分钟
 2. **自动部署**：推送到 `main` 分支会自动触发重新部署
 3. **预览部署**：推送到其他分支会创建预览部署
 4. **自定义域名**：部署成功后可以在 Cloudflare Pages 设置中配置自定义域名
+5. **SSL 证书**：Cloudflare 会自动提供 SSL 证书
+6. **CDN 缓存**：全球 CDN 分发，提高访问速度
+
+## 故障排除清单
+
+### 部署前检查
+- [ ] `package.json` 包含正确的构建脚本
+- [ ] 所有依赖都已正确安装
+- [ ] Gatsby 配置文件语法正确
+- [ ] 环境变量已正确设置
+- [ ] Git 仓库已推送最新代码
+
+### 部署失败时检查
+1. **查看构建日志**：Cloudflare Pages → 项目 → 部署历史
+2. **检查错误信息**：重点关注 npm install 和 gatsby build 阶段
+3. **验证配置**：确认 Root directory、Build command 等设置
+4. **本地测试**：在本地运行 `npm run build` 确保无误
+
+### 性能问题排查
+1. **构建时间过长**：检查依赖大小，优化构建配置
+2. **页面加载慢**：启用 Cloudflare 优化功能
+3. **内存不足**：调整 NODE_OPTIONS 环境变量
+
+## 有用的链接
+
+- [Cloudflare Pages 官方文档](https://developers.cloudflare.com/pages/)
+- [Gatsby 部署指南](https://www.gatsbyjs.com/docs/deploying-to-cloudflare-pages/)
+- [Cloudflare Pages GitHub 集成](https://developers.cloudflare.com/pages/get-started/)
+- [性能优化最佳实践](https://developers.cloudflare.com/pages/platform/)
 
 ## 联系信息
 
-如果遇到部署问题，请检查：
-1. Cloudflare Pages 的构建日志
-2. 项目的 `package.json` 配置
-3. Gatsby 配置文件是否正确
+如果遇到部署问题，请按以下顺序检查：
+1. **构建日志**：Cloudflare Pages 控制台中的详细日志
+2. **项目配置**：`package.json`、`gatsby-config.js` 等配置文件
+3. **环境变量**：确保所有必需的环境变量已设置
+4. **本地构建**：在本地环境中复现问题
+5. **社区支持**：Cloudflare 社区论坛和 Gatsby 官方文档
