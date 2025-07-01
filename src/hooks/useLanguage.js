@@ -1,9 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { getTranslation, defaultLanguage, languages } from '@locales';
 
 const LanguageContext = createContext();
 
-export const LanguageProvider = ({ children }) => {
+const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export const LanguageProvider = ({ children }) => {
     }
   }, []);
 
-  const changeLanguage = (language) => {
+  const changeLanguage = language => {
     if (languages.includes(language)) {
       setCurrentLanguage(language);
       // Only use localStorage if we're in the browser
@@ -26,21 +27,23 @@ export const LanguageProvider = ({ children }) => {
     }
   };
 
-  const t = (key) => getTranslation(key, currentLanguage);
+  const t = key => getTranslation(key, currentLanguage);
 
   const value = {
     currentLanguage,
     changeLanguage,
     t,
-    languages
+    languages,
   };
 
-  return (
-    <LanguageContext.Provider value={value}>
-      {children}
-    </LanguageContext.Provider>
-  );
+  return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 };
+
+LanguageProvider.propTypes = {
+  children: PropTypes.node.isRequired,
+};
+
+export { LanguageProvider };
 
 export const useLanguage = () => {
   const context = useContext(LanguageContext);
