@@ -17,3 +17,7 @@ node_modules/
 # Build outputs
 build/
 dist/
+
+# Large files
+static/slides/*.pdf
+*.pdf
