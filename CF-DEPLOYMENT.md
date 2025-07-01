@@ -5,59 +5,72 @@
 ## 基本配置
 
 ### 框架预设
+
 - **Framework preset**: `Gatsby`
 - **版本要求**: Gatsby 3.x 或更高版本
 - **Node.js 版本**: 推荐 18.x LTS（**重要：不要使用 14.x，会导致语法错误**）
 
 ### 构建设置
+
 - **Build command**: `npm run build`
 - **Build output directory**: `public`
 - **Root directory**: `/` (项目根目录)
-- **Install command**: `npm ci` (自动检测)
+- **Install command**: `npm install --legacy-peer-deps` (推荐，解决依赖冲突)
 
 ## 详细配置说明
 
 ### 1. 构建命令 (Build Command)
+
 ```bash
 npm run build
 ```
+
 这个命令会执行 `gatsby build`，生成静态网站文件。
 
 ### 2. 构建输出目录 (Build Output Directory)
+
 ```
 public
 ```
+
 Gatsby 构建后的静态文件会输出到 `public` 目录。
 
 ### 3. 环境变量 (Environment Variables)
+
 在 Cloudflare Pages 的设置中可以添加以下环境变量：
 
 #### 必需的环境变量
+
 - `NODE_VERSION`: `18` (推荐使用 Node.js 18 LTS，**避免使用 14.x**)
 - `NPM_VERSION`: `latest`
 
 #### 可选的环境变量
+
 - `GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES`: `true` (启用增量构建)
 - `GATSBY_CPU_COUNT`: `2` (限制 CPU 使用)
 - `NODE_OPTIONS`: `--max-old-space-size=4096` (增加内存限制)
 - `GATSBY_TELEMETRY_DISABLED`: `1` (禁用遥测)
 
 #### 生产环境变量
+
 - `NODE_ENV`: `production` (自动设置)
 - `GATSBY_ACTIVE_ENV`: `production`
 
 ### 4. 根目录设置
+
 - 如果代码在仓库根目录：设置为 `/`
 - 如果代码在子目录（如 `v4`）：设置为 `/v4`
 
 ## 部署流程
 
 1. **连接 GitHub 仓库**
+
    - 在 Cloudflare Pages 中选择 "Connect to Git"
    - 选择 GitHub 仓库：`lyrick/Id8`
    - 选择分支：`main`
 
 2. **配置构建设置**
+
    - Framework preset: `Gatsby`
    - Build command: `npm run build`
    - Build output directory: `public`
@@ -70,15 +83,19 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 ## 常见问题解决
 
 ### 问题 1：SyntaxError: Unexpected token '??='
+
 **原因**: Node.js 版本过低（如 14.16.0），不支持空值合并赋值运算符 `??=`
 **解决方案**：
+
 1. 在 Cloudflare Pages 环境变量中设置 `NODE_VERSION`: `18`
 2. 删除项目根目录的 `.nvmrc` 文件，或将其内容改为 `18`
 3. 重新部署项目
 
 ### 问题 2：Cannot find cwd: /opt/buildhome/repo/v4
+
 **原因**: Root directory 配置错误
 **解决方案**：
+
 1. 登录 Cloudflare Pages 控制台
 2. 进入项目设置 → Build & deployments
 3. 点击 "Edit configuration"
@@ -86,25 +103,56 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 5. 保存并重新部署
 
 ### 问题 2：构建超时或内存不足
+
 **解决方案**：
+
 1. 添加环境变量 `NODE_OPTIONS`: `--max-old-space-size=4096`
 2. 优化 Gatsby 配置，启用增量构建
 3. 减少并发构建进程：`GATSBY_CPU_COUNT`: `1`
 
-### 问题 3：依赖安装失败
+### 问题 3：依赖版本冲突和 lockfile 修改错误
+
+**错误信息**: `The lockfile would have been modified by this install, which is explicitly forbidden`
+**原因**: Yarn 4.x 在 CI 环境中检测到依赖版本冲突，且不允许修改 lockfile
+**解决方案**：
+
+1. **在 Cloudflare Pages 环境变量中添加**：
+   - `YARN_ENABLE_IMMUTABLE_INSTALLS`: `false`
+   - `CI`: `false`
+2. **或者修改安装命令为**：`npm install --legacy-peer-deps`
+3. **或者修改构建命令为**：`npm install --legacy-peer-deps && npm run build`
+4. **本地修复依赖冲突**：
+   ```bash
+   # 删除 lockfile 和 node_modules
+   rm yarn.lock package-lock.json
+   rm -rf node_modules
+   # 使用 npm 重新安装依赖
+   npm install --legacy-peer-deps
+   # 提交新的 lockfile
+   git add package-lock.json
+   git commit -m "Update package-lock.json to resolve dependency conflicts"
+   ```
+
+### 问题 4：依赖安装失败
+
 **检查项目**：
+
 1. 确保 `package.json` 和 `yarn.lock`/`package-lock.json` 同步
 2. 检查依赖版本兼容性
 3. 清理 node_modules 后重新安装
 
-### 问题 4：GraphQL 查询错误
+### 问题 5：GraphQL 查询错误
+
 **解决方案**：
+
 1. 检查 `gatsby-config.js` 中的插件配置
 2. 确保所有 markdown 文件格式正确
 3. 验证 frontmatter 字段一致性
 
-### 问题 5：静态资源加载失败
+### 问题 6：静态资源加载失败
+
 **解决方案**：
+
 1. 检查 `static` 目录结构
 2. 确保图片路径正确
 3. 验证 `gatsby-config.js` 中的 `pathPrefix` 设置
@@ -125,16 +173,19 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 ## 性能优化建议
 
 ### 1. 构建优化
+
 - 启用增量构建：`GATSBY_EXPERIMENTAL_PAGE_BUILD_ON_DATA_CHANGES=true`
 - 使用 Gatsby Cloud 缓存策略
 - 优化图片处理：使用 `gatsby-plugin-image`
 
 ### 2. 部署优化
+
 - 启用 Cloudflare 的自动缩小功能
 - 配置适当的缓存策略
 - 使用 Cloudflare 的图片优化服务
 
 ### 3. 监控和分析
+
 - 启用 Cloudflare Analytics
 - 配置 Core Web Vitals 监控
 - 设置部署通知
@@ -142,6 +193,7 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 ## 高级配置
 
 ### 自定义构建脚本
+
 ```json
 {
   "scripts": {
@@ -153,7 +205,9 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 ```
 
 ### Headers 配置
+
 创建 `_headers` 文件在 `static` 目录下：
+
 ```
 /*
   X-Frame-Options: DENY
@@ -166,7 +220,9 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 ```
 
 ### 重定向配置
+
 创建 `_redirects` 文件在 `static` 目录下：
+
 ```
 # 重定向旧路径
 /old-path/* /new-path/:splat 301
@@ -187,6 +243,7 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 ## 故障排除清单
 
 ### 部署前检查
+
 - [ ] `package.json` 包含正确的构建脚本
 - [ ] 所有依赖都已正确安装
 - [ ] Gatsby 配置文件语法正确
@@ -194,12 +251,14 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 - [ ] Git 仓库已推送最新代码
 
 ### 部署失败时检查
+
 1. **查看构建日志**：Cloudflare Pages → 项目 → 部署历史
 2. **检查错误信息**：重点关注 npm install 和 gatsby build 阶段
 3. **验证配置**：确认 Root directory、Build command 等设置
 4. **本地测试**：在本地运行 `npm run build` 确保无误
 
 ### 性能问题排查
+
 1. **构建时间过长**：检查依赖大小，优化构建配置
 2. **页面加载慢**：启用 Cloudflare 优化功能
 3. **内存不足**：调整 NODE_OPTIONS 环境变量
@@ -214,6 +273,7 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 ## 联系信息
 
 如果遇到部署问题，请按以下顺序检查：
+
 1. **构建日志**：Cloudflare Pages 控制台中的详细日志
 2. **项目配置**：`package.json`、`gatsby-config.js` 等配置文件
 3. **环境变量**：确保所有必需的环境变量已设置
