@@ -7,7 +7,7 @@
 ### 框架预设
 - **Framework preset**: `Gatsby`
 - **版本要求**: Gatsby 3.x 或更高版本
-- **Node.js 版本**: 推荐 18.x LTS
+- **Node.js 版本**: 推荐 18.x LTS（**重要：不要使用 14.x，会导致语法错误**）
 
 ### 构建设置
 - **Build command**: `npm run build`
@@ -33,7 +33,7 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 在 Cloudflare Pages 的设置中可以添加以下环境变量：
 
 #### 必需的环境变量
-- `NODE_VERSION`: `18` (推荐使用 Node.js 18 LTS)
+- `NODE_VERSION`: `18` (推荐使用 Node.js 18 LTS，**避免使用 14.x**)
 - `NPM_VERSION`: `latest`
 
 #### 可选的环境变量
@@ -69,7 +69,14 @@ Gatsby 构建后的静态文件会输出到 `public` 目录。
 
 ## 常见问题解决
 
-### 问题 1：Cannot find cwd: /opt/buildhome/repo/v4
+### 问题 1：SyntaxError: Unexpected token '??='
+**原因**: Node.js 版本过低（如 14.16.0），不支持空值合并赋值运算符 `??=`
+**解决方案**：
+1. 在 Cloudflare Pages 环境变量中设置 `NODE_VERSION`: `18`
+2. 删除项目根目录的 `.nvmrc` 文件，或将其内容改为 `18`
+3. 重新部署项目
+
+### 问题 2：Cannot find cwd: /opt/buildhome/repo/v4
 **原因**: Root directory 配置错误
 **解决方案**：
 1. 登录 Cloudflare Pages 控制台
