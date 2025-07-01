@@ -7,17 +7,22 @@ export const LanguageProvider = ({ children }) => {
   const [currentLanguage, setCurrentLanguage] = useState(defaultLanguage);
 
   useEffect(() => {
-    // Check if language is stored in localStorage
-    const savedLanguage = localStorage.getItem('language');
-    if (savedLanguage && languages.includes(savedLanguage)) {
-      setCurrentLanguage(savedLanguage);
+    // Check if we're in the browser and localStorage is available
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const savedLanguage = localStorage.getItem('language');
+      if (savedLanguage && languages.includes(savedLanguage)) {
+        setCurrentLanguage(savedLanguage);
+      }
     }
   }, []);
 
   const changeLanguage = (language) => {
     if (languages.includes(language)) {
       setCurrentLanguage(language);
-      localStorage.setItem('language', language);
+      // Only use localStorage if we're in the browser
+      if (typeof window !== 'undefined' && window.localStorage) {
+        localStorage.setItem('language', language);
+      }
     }
   };
 

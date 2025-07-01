@@ -3,3 +3,10 @@
  *
  * See: https://www.gatsbyjs.org/docs/browser-apis/
  */
+
+import React from 'react';
+import { LanguageProvider } from './src/hooks/useLanguage';
+
+export const wrapRootElement = ({ element }) => {
+  return <LanguageProvider>{element}</LanguageProvider>;
+};

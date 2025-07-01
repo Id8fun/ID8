@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import styled, { ThemeProvider } from 'styled-components';
 import { Head, Loader, Nav, Social, Email, Footer } from '@components';
 import { GlobalStyle, theme } from '@styles';
-import { LanguageProvider } from '@hooks/useLanguage';
+// LanguageProvider is now provided at root level in gatsby-browser.js and gatsby-ssr.js
 
 const StyledContent = styled.div`
   display: flex;
@@ -52,30 +52,28 @@ const Layout = ({ children, location }) => {
       <Head />
 
       <div id="root">
-        <LanguageProvider>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
 
-            <a className="skip-to-content" href="#content">
-              Skip to Content
-            </a>
+          <a className="skip-to-content" href="#content">
+            Skip to Content
+          </a>
 
-            {isLoading && isHome ? (
-              <Loader finishLoading={() => setIsLoading(false)} />
-            ) : (
-              <StyledContent>
-                <Nav isHome={isHome} />
-                <Social isHome={isHome} />
-                <Email isHome={isHome} />
+          {isLoading && isHome ? (
+            <Loader finishLoading={() => setIsLoading(false)} />
+          ) : (
+            <StyledContent>
+              <Nav isHome={isHome} />
+              <Social isHome={isHome} />
+              <Email isHome={isHome} />
 
-                <div id="content">
-                  {children}
-                  <Footer />
-                </div>
-              </StyledContent>
-            )}
-          </ThemeProvider>
-        </LanguageProvider>
+              <div id="content">
+                {children}
+                <Footer />
+              </div>
+            </StyledContent>
+          )}
+        </ThemeProvider>
       </div>
     </>
   );
